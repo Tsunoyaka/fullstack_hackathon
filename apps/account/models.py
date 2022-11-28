@@ -30,16 +30,16 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField('Username', max_length=50, primary_key=True)
-    email = models.EmailField('Email', max_length=255, unique=True)
+    username = models.CharField('Username', max_length=50)
+    email = models.EmailField('Email', max_length=255, primary_key=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self) -> str:
         return self.username
