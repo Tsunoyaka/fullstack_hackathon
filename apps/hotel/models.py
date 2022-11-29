@@ -6,29 +6,29 @@ from .utils import get_time
 
 User = get_user_model()
 
-class Region(models.Model):
-    REGION_CHOICES = (
-        ('chuy', 'Чуйская обл.'),
-        ('osh', 'Ошская обл.'),
-        ('issyk-Kul', 'Иссык-Кульская обл.'),
-        ('talas', 'Таласская обл.'),
-        ('naryn', 'Нарынская обл.'),
-        ('batken', 'Баткенская обл.'),
-        ('jalal-Abad', 'Джалал-Абадская обл.')
-    )
-    region = models.CharField(max_length=100, choices=REGION_CHOICES, unique=True)
-    slug = models.SlugField(max_length=100, primary_key=True, blank=True)
-    def __str__(self) -> str:
-        return self.region
+# class Region(models.Model):
+#     REGION_CHOICES = (
+#         ('chuy', 'Чуйская обл.'),
+#         ('osh', 'Ошская обл.'),
+#         ('issyk-Kul', 'Иссык-Кульская обл.'),
+#         ('talas', 'Таласская обл.'),
+#         ('naryn', 'Нарынская обл.'),
+#         ('batken', 'Баткенская обл.'),
+#         ('jalal-Abad', 'Джалал-Абадская обл.')
+#     )
+#     region = models.CharField(max_length=100, choices=REGION_CHOICES, unique=True)
+#     slug = models.SlugField(max_length=100, primary_key=True, blank=True)
+#     def __str__(self) -> str:
+#         return self.region
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.region)
-        super().save(*args, **kwargs)
+#     def save(self, *args, **kwargs):
+#         if not self.slug:
+#             self.slug = slugify(self.region)
+#         super().save(*args, **kwargs)
 
-    class Meta:
-        verbose_name = 'Область'
-        verbose_name_plural = 'Области'
+#     class Meta:
+#         verbose_name = 'Область'
+#         verbose_name_plural = 'Области'
 
 
 class Hotel(models.Model):
@@ -44,13 +44,16 @@ class Hotel(models.Model):
         (FOUR, '4'),
         (FIVE, '5')
         )
-
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='hotels')
     title = models.CharField(max_length=300)
     stars = models.PositiveSmallIntegerField(choices=RAITING_CHOICES)
     slug = models.SlugField(max_length=400, primary_key=True, blank=True)
     desc = models.TextField()
     desc_list = models.CharField(max_length=300)
-    region = models.ForeignKey(Region, related_name='regions', on_delete=models.CASCADE)
+    # region = models.ForeignKey(Region, related_name='regions', on_delete=models.CASCADE)
     adress = ...
     image = models.ImageField(upload_to='hotel_images')
     food = models.BooleanField(default=False)
@@ -71,13 +74,14 @@ class Hotel(models.Model):
         verbose_name = 'Отель'
         verbose_name_plural = 'Отели'
 
+
 class HotelImage(models.Model):
     image = models.ImageField(upload_to='hotel_images/carousel')
-    product = models.ForeignKey(
+    hotel = models.ForeignKey(
         to=Hotel,
         on_delete=models.CASCADE,
         related_name='hotel_images'
     )
 
     def __str__(self) -> str:
-        return f"Image to {self.product.title}"
+        return f"Image to {self.hotel.title}"

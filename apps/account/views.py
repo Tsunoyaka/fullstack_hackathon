@@ -19,7 +19,7 @@ User = get_user_model()
 
 class RegistrationView(APIView):
     @swagger_auto_schema(request_body=UserRegistrationSerializer)
-    def post(self, request: Request):
+    def hotel(self, request: Request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -48,7 +48,7 @@ class AccountActivationView(APIView):
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request: Request):
+    def hotel(self, request: Request):
         serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             serializer.set_new_password()
@@ -59,7 +59,7 @@ class ChangePasswordView(APIView):
 
 
 class RestorePasswordView(APIView):
-    def post(self, request: Request):
+    def hotel(self, request: Request):
         serializer = RestorePasswordSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.send_code()
@@ -70,7 +70,7 @@ class RestorePasswordView(APIView):
 
 
 class SetRestoredPasswordView(APIView):
-    def post(self, request: Request):
+    def hotel(self, request: Request):
         serializer = SetRestoredPasswordSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.set_new_password()
