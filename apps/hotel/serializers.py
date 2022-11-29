@@ -19,11 +19,11 @@ class HotelListSerializer(serializers.ModelSerializer):
             if r.rating is not None:
                 rating_list.append(r.rating)
                 representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
-        representation['comments'] = CommentSerializer(
-        instance.comments.all(), many=True
-        ).data
-        representation['hotel_image'] = HotelImageSerializer(
-            instance.hotel_images.all(), many=True).data
+        # representation['comments'] = CommentSerializer(
+        # instance.comments.all(), many=True
+        # ).data
+        # representation['hotel_image'] = HotelImageSerializer(
+        #     instance.hotel_images.all(), many=True).data
         return representation      
 
 
@@ -46,6 +46,20 @@ class HotelSerializer(serializers.ModelSerializer):
         attrs['user'] = user
         return attrs
 
+    def to_representation(self, instance):
+            representation = super().to_representation(instance)
+            ratings = instance.comments.all()
+            rating_list = []
+            for r in ratings:
+                if r.rating is not None:
+                    rating_list.append(r.rating)
+                    representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
+            representation['comments'] = CommentSerializer(
+            instance.comments.all(), many=True
+            ).data
+            representation['hotel_image'] = HotelImageSerializer(
+                instance.hotel_images.all(), many=True).data
+            return representation 
 
 
 class HotelCreateSerializer(serializers.ModelSerializer):

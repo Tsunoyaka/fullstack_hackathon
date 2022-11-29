@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.review.serializers import CommentSerializer
-from .serializers import HotelListSerializer, HotelCreateSerializer
+from .serializers import HotelListSerializer, HotelCreateSerializer, HotelSerializer
 from .models import Hotel
 from .permissions import IsOwner
 
@@ -18,7 +18,7 @@ class HotelListViewSet(ModelViewSet):
         filters.SearchFilter, 
         rest_filter.DjangoFilterBackend, 
         filters.OrderingFilter]
-    search_fields = ['title', 'region', 'stars']
+    search_fields = ['title','stars']
     filterset_fields = ['pets', 'food']
 
     def perform_create(self, serializer):
@@ -29,6 +29,8 @@ class HotelListViewSet(ModelViewSet):
             return HotelListSerializer
         elif self.action == 'create':
             return HotelCreateSerializer
+        elif self.action == 'retrieve':
+            return HotelSerializer
         return super().get_serializer_class()
 
     def get_permissions(self):
@@ -51,3 +53,4 @@ class HotelListViewSet(ModelViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
                 )
+

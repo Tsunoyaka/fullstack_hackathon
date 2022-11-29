@@ -55,7 +55,7 @@ class Comment(models.Model):
         for i in number_list:
             if i is not None:
                 number_list1.append(i)
-        self.rating = sum(number_list1)/len(number_list1)
+        self.rating = round(sum(number_list1)/len(number_list1), 1)
         super().save(*args, **kwargs)
 
     
