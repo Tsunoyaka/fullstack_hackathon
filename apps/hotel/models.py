@@ -2,7 +2,7 @@ from django.db import models
 from slugify import slugify
 from django.contrib.auth import get_user_model
 from .utils import get_time
-
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -66,6 +66,10 @@ class Hotel(models.Model):
         else:
             self.slug = slugify(self.title + get_time())
         super().save(*args, **kwargs)
+
+    def get_adsolute_url(self):
+        return reverse('post-detail', kwargs={'pk': self.pk})
+
 
 
 class HotelImage(models.Model):
