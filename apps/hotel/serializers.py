@@ -4,7 +4,6 @@ from django.db.models import Avg
 from .models import Hotel, HotelImage
 from apps.review.models import Comment
 from apps.review.serializers import CommentSerializer, CommentImageSerializer
-from django_filters import rest_framework as rest_filter
 
 
 class HotelListSerializer(serializers.ModelSerializer):
@@ -20,7 +19,6 @@ class HotelListSerializer(serializers.ModelSerializer):
             if r.rating is not None:
                 rating_list.append(r.rating)
                 representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
-            
         representation['comments'] = CommentSerializer(
         instance.comments.all(), many=True
         ).data
@@ -76,26 +74,3 @@ class HotelCreateSerializer(serializers.ModelSerializer):
         return hotel
 
 
-
-
-
-
-
-
-
-
-# class ProductListSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Product
-#         fields = ('image', 'title', 'price', 'in_stock', 'slug')
-    
-#     def to_representation(self, instance):
-#         rep = super().to_representation(instance)
-#         rep['comments_count'] = instance.comments.all().count()
-#         return rep
-
-
-# class CategorySerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Category
-#         fields = '__all__'

@@ -51,7 +51,11 @@ class Comment(models.Model):
 
     def save(self, *args, **kwargs):
         number_list = [self.staff, self.comfort, self.purity, self.price_quality_ratio, self.location, self.facilities]
-        self.rating = sum(number_list)/len(number_list)
+        number_list1 = []
+        for i in number_list:
+            if i is not None:
+                number_list1.append(i)
+        self.rating = sum(number_list1)/len(number_list1)
         super().save(*args, **kwargs)
 
     
