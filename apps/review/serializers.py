@@ -23,6 +23,7 @@ class CommentSerializer(serializers.ModelSerializer):
     #         images.append(CommentImage(comment=comment, image=image))
     #     CommentImage.objects.bulk_create(images)
     #     return comment
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['comment_images'] = CommentImageSerializer(

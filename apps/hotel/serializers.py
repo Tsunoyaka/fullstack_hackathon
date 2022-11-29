@@ -10,10 +10,17 @@ from django_filters import rest_framework as rest_filter
 class HotelListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ('title', 'stars', 'region', 'desc_list')
+        fields = ('title', 'stars', 'region', 'desc_list', 'image')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        ratings = instance.comments.all()
+        rating_list = []
+        for r in ratings:
+            if r.rating is not None:
+                rating_list.append(r.rating)
+                representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
+            
         representation['comments'] = CommentSerializer(
         instance.comments.all(), many=True
         ).data
@@ -41,19 +48,6 @@ class HotelSerializer(serializers.ModelSerializer):
         attrs['user'] = user
         return attrs
 
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['comments'] = CommentSerializer(
-    #         instance.comments.all(), many=True).data
-    #     representation['hotel_images'] = HotelImageSerializer(
-    #         instance.hotel_images.all(), many=True).data
-    #     rating = instance.ratings.aggregate(Avg('staff', 'comfort', 'clean', 'price_quality_ratio', 'location', 'facilities'))['rating__avg']
-    #     if rating:
-    #         representation['rating'] = round(rating, 1)
-    #     else:
-    #         representation['rating'] = 0.0
-    #     # {'rating__avg': 3.4}
-    #     return representation
 
 
 class HotelCreateSerializer(serializers.ModelSerializer):
