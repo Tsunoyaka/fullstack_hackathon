@@ -4,8 +4,8 @@ from .views import HotelListViewSet
 
 
 router = DefaultRouter()
-router.register('post', HotelListViewSet, 'post')
-# router.register('comment', CommentCreateDeleteView)
+router.register('hotels', HotelListViewSet, 'hotel')
+# router.register('comments', CommentCreateDeleteView, 'hotel')
 # router.register('tags', TagViewSet, 'tags')
 
 urlpatterns = [

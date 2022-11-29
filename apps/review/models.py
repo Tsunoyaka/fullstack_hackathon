@@ -40,7 +40,8 @@ class Comment(models.Model):
     rating = models.DecimalField(max_digits=4, 
         decimal_places=1,
         blank=True,
-        null=True)
+        null=True,
+        default=0)
     
     good_review = models.TextField(blank=True, null=True)
     bag_review = models.TextField(blank=True, null=True)
@@ -54,7 +55,11 @@ class Comment(models.Model):
 
     def save(self, *args, **kwargs):
         number_list = [self.staff, self.comfort, self.purity, self.price_quality_ratio, self.location, self.facilities]
-        self.rating = sum(number_list)/len(number_list)
+        number_list1 = []
+        for i in number_list:
+            if i is not None:
+                number_list1.append(i)
+        self.rating = sum(number_list1)/len(number_list1)
         super().save(*args, **kwargs)
 
     

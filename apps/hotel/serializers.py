@@ -82,14 +82,6 @@ class HotelCreateSerializer(serializers.ModelSerializer):
         return hotel
 
 
-
-
-
-
-
-
-
-
 # class ProductListSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Product

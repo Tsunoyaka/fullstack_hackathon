@@ -4,14 +4,14 @@ from django.db.models import Avg
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(default=serializers.CurrentUserDefault(), source='user.username')
 
     class Meta:
         model = Comment
         exclude = ('id', 'hotel')
 
     def validate(self, attrs):
-        user = self.context['request'].user
+        user = self.context.get('request').user
         attrs['user'] = user
         return attrs
 
@@ -23,6 +23,7 @@ class CommentSerializer(serializers.ModelSerializer):
     #         images.append(CommentImage(comment=comment, image=image))
     #     CommentImage.objects.bulk_create(images)
     #     return comment
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['comment_images'] = CommentImageSerializer(

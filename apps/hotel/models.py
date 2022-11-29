@@ -8,13 +8,13 @@ User = get_user_model()
 
 class Region(models.Model):
     REGION_CHOICES = (
-        ('chuy', 'Чуй'),
-        ('osh', 'Ош'),
-        ('issyk-Kul', 'Иссык-Куль'),
-        ('talas', 'Талас'),
-        ('naryn', 'Нарын'),
-        ('batken', 'Баткен'),
-        ('jalal-Abad', 'Джалал-Абад')
+        ('chuy', 'Чуйская обл.'),
+        ('osh', 'Ошская обл.'),
+        ('issyk-Kul', 'Иссык-Кульская обл.'),
+        ('talas', 'Таласская обл.'),
+        ('naryn', 'Нарынская обл.'),
+        ('batken', 'Баткенская обл.'),
+        ('jalal-Abad', 'Джалал-Абадская обл.')
     )
     region = models.CharField(max_length=100, choices=REGION_CHOICES, unique=True)
     slug = models.SlugField(max_length=100, primary_key=True, blank=True)
@@ -67,6 +67,9 @@ class Hotel(models.Model):
             self.slug = slugify(self.title + get_time())
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = 'Отель'
+        verbose_name_plural = 'Отели'
 
 class HotelImage(models.Model):
     image = models.ImageField(upload_to='hotel_images/carousel')
@@ -78,5 +81,3 @@ class HotelImage(models.Model):
 
     def __str__(self) -> str:
         return f"Image to {self.product.title}"
-
-  
