@@ -63,10 +63,10 @@ class HotelSerializer(serializers.ModelSerializer):
 
 
 class HotelCreateSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(
-        default=serializers.CurrentUserDefault(),
-        source='user.username'
-    )
+    # user = serializers.ReadOnlyField(
+    #     default=serializers.CurrentUserDefault(),
+    #     source='user.username'
+    # )
     carousel_img = serializers.ListField(
         child=serializers.FileField(),
         write_only=True
@@ -78,13 +78,11 @@ class HotelCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         carousel_images = validated_data.pop('carousel_img')
-        region = validated_data.pop('region')
-        hotel = Hotel.objects.create(**validated_data)
-        hotel.region.set(region)
+        # hcreate = validated_data.pop('')
+        hotel = Hotel.objects.create(**validated_data) 
         images = []
         for image in carousel_images:
             images.append(HotelImage(hotel=hotel, image=image))
         HotelImage.objects.bulk_create(images)
         return hotel
-
 

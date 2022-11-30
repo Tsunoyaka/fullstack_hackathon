@@ -21,8 +21,8 @@ class HotelListViewSet(ModelViewSet):
     search_fields = ['title','stars']
     filterset_fields = ['pets', 'food']
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -39,7 +39,7 @@ class HotelListViewSet(ModelViewSet):
         if self.action == 'comment' and self.request.method == 'DELETE':
             self.permission_classes = [IsOwner]
         if self.action in ['create', 'comment', 'set_rating', 'like']:
-            self.permission_classes = [IsAuthenticated]
+            self.permission_classes = [IsAdminUser]
         if self.action in ['destroy', 'update', 'partial_update']:
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
