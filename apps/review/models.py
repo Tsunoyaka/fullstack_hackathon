@@ -37,16 +37,9 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    rating = models.DecimalField(
-        # choices=RAITING_CHOICES,
-        max_digits=4, 
-        decimal_places=1,
-        blank=True,
-        null=True,
-        default=0)
-    
+    rating = models.FloatField(blank=True, null=True)    
     good_review = models.TextField(blank=True, null=True)
-    bag_review = models.TextField(blank=True, null=True)
+    bad_review = models.TextField(blank=True, null=True)
     staff = models.PositiveSmallIntegerField(choices=RAITING_CHOICES, blank=True, null=True)
     comfort = models.PositiveSmallIntegerField(choices=RAITING_CHOICES, blank=True, null=True)
     purity = models.PositiveSmallIntegerField(choices=RAITING_CHOICES, blank=True, null=True)
@@ -83,5 +76,3 @@ class CommentImage(models.Model):
 
     def str(self) -> str:
         return f'Image to {self.comment.hotel}'
-
-
