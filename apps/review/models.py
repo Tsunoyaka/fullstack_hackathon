@@ -72,4 +72,4 @@ class CommentImage(models.Model):
     )
 
     def str(self) -> str:
-        return f'Image to {self.comment.book}'
+        return f'Image to {self.comment.hotel}'

@@ -15,7 +15,7 @@ class Room(models.Model):
         ('quadruple', 'Quadruple')
     )
     room_title = models.CharField(max_length=300)
-    room_no=models.CharField(max_length=5, primary_key=True)
+    room_no=models.CharField(max_length=100, primary_key=True)
     room_type=models.CharField(max_length=50, choices=ROOM_TYPE_CHIOCES)
     room_capacity = models.CharField(max_length=50, choices=ROOM_CAPACITY_CHIOCES)
     room_price=models.DecimalField(max_digits=10, decimal_places=2)
@@ -41,6 +41,13 @@ class Room(models.Model):
         related_name='hotels'
     )
     
+    def save(self, *args, **kwargs):
+        room_no = list(room_no)
+        for i in room_no:
+            if len(room_no) > 1:
+                room_no=i
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return self.room_no
 
@@ -61,12 +68,6 @@ class RoomImage(models.Model):
         return f"Image to {self.room.room_no}"
 
 
-list_ = [5, 9, 3]
-
-for i in list_:
-    room = Room.objects.create(
-    no = i
-    )
 
 # TODO добавить дополнительные услуги комнаты
 # T ODO 

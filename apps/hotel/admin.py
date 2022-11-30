@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Hotel, HotelImage, Region
+from .models import Hotel, HotelImage
 
 
 
@@ -14,4 +14,3 @@ class PostAdmin(admin.ModelAdmin):
     inlines = [TabularInImages]
 
 admin.site.register(Hotel, PostAdmin)
-admin.site.register(Region)
