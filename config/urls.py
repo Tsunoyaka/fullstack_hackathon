@@ -39,7 +39,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('apps.account.urls')),
     path('hotel/', include('apps.hotel.urls')),
-    path('room/', include('apps.room.urls')),
+    # path('room/', include('apps.room.urls')),
 ]
 
 

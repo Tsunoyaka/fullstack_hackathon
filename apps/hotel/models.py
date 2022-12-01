@@ -7,6 +7,13 @@ from django.urls import reverse
 User = get_user_model()
 
 class Hotel(models.Model):
+    user = models.ForeignKey(
+        verbose_name='manager',
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='manager'
+    )
+    
     REGION_CHOICES = (
         ('chuy', 'Чуйская обл.'),
         ('osh', 'Ошская обл.'),
@@ -35,7 +42,6 @@ class Hotel(models.Model):
     desc = models.TextField()
     desc_list = models.CharField(max_length=300)
     region = models.CharField(max_length=50, choices=REGION_CHOICES)
-    adress = models.CharField(max_length=300)
     image = models.ImageField(upload_to='hotel_images')
     food = models.BooleanField(default=False)
     pets = models.BooleanField(default=False)
@@ -56,7 +62,7 @@ class Hotel(models.Model):
         verbose_name_plural = 'Отели'
         
     def get_adsolute_url(self):
-        return reverse('post-detail', kwargs={'pk': self.pk})
+        return reverse('hotel-detail', kwargs={'pk': self.pk})
 
 
 

@@ -1,7 +1,7 @@
 from django.db import models
 from apps.hotel.models import Hotel
 from django.contrib.auth import get_user_model
-
+from django.urls import reverse
 User = get_user_model()
 
 class Comment(models.Model):
@@ -52,10 +52,13 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         number_list = [self.staff, self.comfort, self.purity, self.price_quality_ratio, self.location, self.facilities]
         number_list1 = []
-        for i in number_list:
-            if i is not None:
-                number_list1.append(i)
-        self.rating = round(sum(number_list1)/len(number_list1), 1)
+        try:
+            for i in number_list:
+                if i is not None:
+                    number_list1.append(i)
+            self.rating = round(sum(number_list1)/len(number_list1), 1)
+        except:
+            self.rating = None
         super().save(*args, **kwargs)
 
     
@@ -65,6 +68,9 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return f'Comment from {self.user.username} to {self.hotel.title}'
+
+    def get_adsolute_url(self):
+        return reverse('comment-detail', kwargs={'pk': self.pk})
 
 
 class CommentImage(models.Model):

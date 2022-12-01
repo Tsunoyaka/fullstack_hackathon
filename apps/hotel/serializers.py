@@ -4,12 +4,14 @@ from django.db.models import Avg
 from .models import Hotel, HotelImage
 from apps.review.models import Comment
 from apps.review.serializers import CommentSerializer, CommentImageSerializer
+from apps.room.serializers import RoomSerializer
 
+from decouple import config
 
 class HotelListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ('title', 'stars', 'region', 'desc_list', 'image')
+        fields = ('title', 'stars', 'region', 'desc_list', 'image', 'slug')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -19,11 +21,6 @@ class HotelListSerializer(serializers.ModelSerializer):
             if r.rating is not None:
                 rating_list.append(r.rating)
                 representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
-        # representation['comments'] = CommentSerializer(
-        # instance.comments.all(), many=True
-        # ).data
-        # representation['hotel_image'] = HotelImageSerializer(
-        #     instance.hotel_images.all(), many=True).data
         return representation      
 
 
@@ -35,11 +32,11 @@ class HotelImageSerializer(serializers.ModelSerializer):
 
         
 class HotelSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    # user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Hotel
-        fields = '__all__'
+        exclude = ('desc_list', 'user')
     
     def validate(self, attrs):
         user = self.context['request'].user
@@ -55,18 +52,22 @@ class HotelSerializer(serializers.ModelSerializer):
                     rating_list.append(r.rating)
                     representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
             representation['comments'] = CommentSerializer(
-            instance.comments.all(), many=True
-            ).data
-            representation['hotel_image'] = HotelImageSerializer(
-                instance.hotel_images.all(), many=True).data
+            instance.comments.all(), many=True).data
+            representation['room'] = RoomSerializer(
+                instance.room_manager.all(), many=True).data
+            imeges = HotelImageSerializer(instance.hotel_images.all(), many=True).data
+            list_ = []
+            for i in imeges:
+                list_.append(config('IMAGE_HOSTS') + i['image'])
+            representation['hotel_images'] = list_
             return representation 
 
 
 class HotelCreateSerializer(serializers.ModelSerializer):
-    # user = serializers.ReadOnlyField(
-    #     default=serializers.CurrentUserDefault(),
-    #     source='user.username'
-    # )
+    user = serializers.ReadOnlyField(
+        default=serializers.CurrentUserDefault(),
+        source='user.username'
+    )
     carousel_img = serializers.ListField(
         child=serializers.FileField(),
         write_only=True
@@ -78,7 +79,6 @@ class HotelCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         carousel_images = validated_data.pop('carousel_img')
-        # hcreate = validated_data.pop('')
         hotel = Hotel.objects.create(**validated_data) 
         images = []
         for image in carousel_images:

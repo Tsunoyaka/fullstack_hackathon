@@ -8,8 +8,8 @@ class TabularInImages(admin.TabularInline):
     fields = ['image']
 
 
-class PostAdmin(admin.ModelAdmin):
+class HotelAdmin(admin.ModelAdmin):
     model = Hotel
     inlines = [TabularInImages]
 
-admin.site.register(Hotel, PostAdmin)
+admin.site.register(Hotel, HotelAdmin)
