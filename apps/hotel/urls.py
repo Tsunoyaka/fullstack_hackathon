@@ -6,9 +6,8 @@ from django.conf.urls.static import static
 
 
 router = DefaultRouter()
-router.register('post', HotelListViewSet, 'post')
-# router.register('comment', CommentCreateDeleteView)
-# router.register('tags', TagViewSet, 'tags')
+router.register('hotels', HotelListViewSet, 'hotel')
+
 
 urlpatterns = [
     # path('list/', HotelListViewSet.as_view(), name='hotel_list')

@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Hotel, HotelImage, Region
-
+from .models import Hotel, HotelImage
 
 
 class TabularInImages(admin.TabularInline):
@@ -9,9 +8,8 @@ class TabularInImages(admin.TabularInline):
     fields = ['image']
 
 
-class PostAdmin(admin.ModelAdmin):
+class HotelAdmin(admin.ModelAdmin):
     model = Hotel
     inlines = [TabularInImages]
 
-admin.site.register(Hotel, PostAdmin)
-admin.site.register(Region)
+admin.site.register(Hotel, HotelAdmin)
