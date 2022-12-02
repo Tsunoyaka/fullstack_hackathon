@@ -20,6 +20,10 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework.routers import DefaultRouter
+
+
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -40,6 +44,8 @@ urlpatterns = [
     path('account/', include('apps.account.urls')),
     path('hotel/', include('apps.hotel.urls')),
     path('booking/', include('apps.booking.urls')),
+    path('room/', include('apps.room.urls')),
+    # path('comment/', include('apps.review.urls')),
 ]
 
 

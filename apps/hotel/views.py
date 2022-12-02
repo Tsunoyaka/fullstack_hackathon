@@ -4,12 +4,13 @@ from rest_framework import filters, status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.review.serializers import CommentSerializer, CommentRatingSerializer
-from apps.review.models import Comment
-from .serializers import HotelListSerializer, HotelCreateSerializer
+from apps.review.serializers import CommentCRUDSerializer
+from .serializers import HotelListSerializer, HotelCreateSerializer, HotelSerializer
 from .models import Hotel
 from .permissions import IsOwner
+from apps.review.models import Comment
 
 
 class HotelListViewSet(ModelViewSet):
@@ -19,7 +20,7 @@ class HotelListViewSet(ModelViewSet):
         filters.SearchFilter, 
         rest_filter.DjangoFilterBackend, 
         filters.OrderingFilter]
-    search_fields = ['title', 'region', 'stars']
+    search_fields = ['title','stars']
     filterset_fields = ['pets', 'food']
     ordering_fields = ['address']
 
@@ -31,48 +32,43 @@ class HotelListViewSet(ModelViewSet):
             return HotelListSerializer
         elif self.action == 'create':
             return HotelCreateSerializer
+        elif self.action == 'retrieve':
+            return HotelSerializer
         return super().get_serializer_class()
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
-        if self.action == 'comment' and self.request.method == 'DELETE':
-            self.permission_classes = [IsOwner]
-        if self.action in ['create', 'comment', 'set_rating', 'like']:
+        if self.action in ['create', 'comment']:
             self.permission_classes = [IsAuthenticated]
         if self.action in ['destroy', 'update', 'partial_update']:
             self.permission_classes = [IsAdminUser]
         return super().get_permissions()
 
-    @action(detail=True, methods=['POST', 'DELETE'])
-    def comment(self, request, pk=None):
+    @action(detail=True, methods=['POST'])
+    def create_comment(self, request, pk=None):
         hotel = self.get_object()
-        serializer = CommentSerializer(data=request.data, context={'request': request})
+        serializer = CommentCRUDSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user, hotel=hotel)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED
-                )
-
-    @action(methods=['POST', 'PATCH'], detail=True, url_path='set-rating')
-    def set_rating(self, request, pk=None):
-        data = request.data.copy()
-        data['hotel'] = pk
-        serializer = CommentRatingSerializer(data=data,context={'request': request})
-        rate = Comment.objects.filter(
-            user=request.user,
-            hotel=pk
-        ).first()
-        if serializer.is_valid(raise_exception=True):
-            if rate and request.method == 'POST':
+            if request.method == 'POST':
+                serializer.save(user=request.user, hotel=hotel)
                 return Response(
-                    {'detail': 'Rating object exists. Use PATCH method'}
-                )
-            elif rate and request.method == 'PATCH':
-                serializer.update(rate, serializer.validated_data)
-                return Response('Updated!')
-            elif request.method == 'POST':
-                serializer.create(serializer.validated_data)
-                return Response(serializer.data)
-            else:
-                return Response({'detail': 'Rating object does not exist. Use POST method.'})
+                    serializer.data, status=status.HTTP_201_CREATED
+                    )
+
+
+class DeleteCommentApiView(APIView):
+    def delete(self, request, slug, pk):
+        try:
+            obj = Comment.objects.get(pk=pk).delete()
+            obj_ = Hotel.objects.get(slug=slug)
+            return Response('Комментарий успешно удален')
+        except Comment.DoesNotExist:
+            return Response('Страница не найдена!', status=status.HTTP_404_NOT_FOUND)
+
+    # def get_permissions(self):
+    #     if self.action == 'delete_comment' and self.request.method == 'DELETE':
+    #         self.permission_classes = [IsOwner]
+    #     if self.action in ['create_comment']:
+    #         self.permission_classes = [IsAuthenticated]
+    #     return super().get_permissions()

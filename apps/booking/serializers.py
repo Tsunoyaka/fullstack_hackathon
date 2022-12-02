@@ -1,4 +1,4 @@
-from rest_framework import fields, serializers
+from rest_framework import serializers
 
 from apps.account.models import User
 from apps.hotel.serializers import HotelSerializer
@@ -9,7 +9,7 @@ from .models import Booking
 class GuestSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model  = User
-        fields = ("username", "email")
+        fields = ("user", "email")
         
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -18,4 +18,4 @@ class BookingSerializer(serializers.ModelSerializer):
     room  = RoomCRUDSerializer
     class Meta:
         model = Booking
-        fields =("username", "hotel", "room", "checkin_date", "checkout_date", "charge",)
+        fields =("user", "hotel", "room", "checkin_date", "checkout_date",)

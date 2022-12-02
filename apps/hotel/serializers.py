@@ -4,7 +4,6 @@ from django.db.models import Avg
 from .models import Hotel, HotelImage
 from apps.review.models import Comment
 from apps.review.serializers import CommentSerializer, CommentImageSerializer
-from django_filters import rest_framework as rest_filter
 
 
 class HotelListSerializer(serializers.ModelSerializer):
@@ -20,12 +19,11 @@ class HotelListSerializer(serializers.ModelSerializer):
             if r.rating is not None:
                 rating_list.append(r.rating)
                 representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
-            
-        representation['comments'] = CommentSerializer(
-        instance.comments.all(), many=True
-        ).data
-        representation['hotel_image'] = HotelImageSerializer(
-            instance.hotel_images.all(), many=True).data
+        # representation['comments'] = CommentSerializer(
+        # instance.comments.all(), many=True
+        # ).data
+        # representation['hotel_image'] = HotelImageSerializer(
+        #     instance.hotel_images.all(), many=True).data
         return representation      
 
 
@@ -46,6 +44,21 @@ class HotelSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         attrs['user'] = user
         return attrs
+
+    def to_representation(self, instance):
+            representation = super().to_representation(instance)
+            ratings = instance.comments.all()
+            rating_list = []
+            for r in ratings:
+                if r.rating is not None:
+                    rating_list.append(r.rating)
+                    representation['avg_rating'] = round(sum(rating_list)/len(rating_list), 1)
+            representation['comments'] = CommentSerializer(
+            instance.comments.all(), many=True
+            ).data
+            representation['hotel_image'] = HotelImageSerializer(
+                instance.hotel_images.all(), many=True).data
+            return representation 
 
 
 class HotelCreateSerializer(serializers.ModelSerializer):
@@ -72,3 +85,5 @@ class HotelCreateSerializer(serializers.ModelSerializer):
             images.append(HotelImage(hotel=hotel, image=image))
         HotelImage.objects.bulk_create(images)
         return hotel
+
+

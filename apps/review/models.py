@@ -37,7 +37,8 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    rating = models.FloatField(blank=True, null=True)    
+
+    rating = models.FloatField(blank=True, null=True)
     good_review = models.TextField(blank=True, null=True)
     bad_review = models.TextField(blank=True, null=True)
     staff = models.PositiveSmallIntegerField(choices=RAITING_CHOICES, blank=True, null=True)
@@ -54,7 +55,7 @@ class Comment(models.Model):
         for i in number_list:
             if i is not None:
                 number_list1.append(i)
-        self.rating = sum(number_list1)/len(number_list1)
+        self.rating = round(sum(number_list1)/len(number_list1), 1)
         super().save(*args, **kwargs)
 
     
