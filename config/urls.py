@@ -45,7 +45,7 @@ urlpatterns = [
     path('hotel/', include('apps.hotel.urls')),
     path('booking/', include('apps.booking.urls')),
     path('room/', include('apps.room.urls')),
-    # path('comment/', include('apps.review.urls')),
+    path('comment/', include('apps.review.urls')),
 ]
 
 

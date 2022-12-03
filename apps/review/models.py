@@ -50,12 +50,12 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        number_list = [self.staff, self.comfort, self.purity, self.price_quality_ratio, self.location, self.facilities]
-        number_list1 = []
-        for i in number_list:
-            if i is not None:
-                number_list1.append(i)
-        self.rating = round(sum(number_list1)/len(number_list1), 1)
+        # number_list = [self.staff, self.comfort, self.purity, self.price_quality_ratio, self.location, self.facilities]
+        # number_list1 = []
+        # for i in number_list:
+        #     if i is not None:
+        #         number_list1.append(i)
+        # self.rating = round(sum(number_list1)/len(number_list1), 1)
         super().save(*args, **kwargs)
 
     

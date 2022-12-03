@@ -70,7 +70,7 @@ class HotelCreateSerializer(serializers.ModelSerializer):
         child=serializers.FileField(),
         write_only=True
     )
-
+    
     class Meta:
         model = Hotel
         fields = '__all__'
